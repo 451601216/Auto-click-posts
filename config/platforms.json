@@ -1,0 +1,46 @@
+{
+    "platforms": [
+        {
+            "name": "sohu",
+            "display_name": "搜狐",
+            "domain": "sohu.com",
+            "active": true
+        },
+        {
+            "name": "toutiao",
+            "display_name": "头条",
+            "domain": "toutiao.com",
+            "active": true
+        },
+        {
+            "name": "netease",
+            "display_name": "网易",
+            "domain": "163.com",
+            "active": true
+        },
+        {
+            "name": "smzdm",
+            "display_name": "什么值得买",
+            "domain": "smzdm.com",
+            "active": true
+        },
+        {
+            "name": "csdn",
+            "display_name": "CSDN",
+            "domain": "csdn.net",
+            "active": true
+        },
+        {
+            "name": "xueqiu",
+            "display_name": "雪球网",
+            "domain": "xueqiu.com",
+            "active": true
+        },
+        {
+            "name": "generic",
+            "display_name": "通用平台",
+            "domain": "",
+            "active": true
+        }
+    ]
+}

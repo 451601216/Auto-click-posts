@@ -1,0 +1,21 @@
+{
+  "clicks": {
+    "description": "需要点击的URL列表配置",
+    "format": "[URL列表]",
+    "default": [],
+    "values": [
+      "https://developer.aliyun.com/article/1693313",
+      "https://zhuanlan.zhihu.com/p/1983952059930800801",
+      "https://www.163.com/dy/article/JRP3U3KG0550S2L1.html",
+      "https://www.sohu.com/a/906003169_211762",
+      "https://www.sohu.com/a/876963035_121312308",
+      "https://www.sohu.com/a/876962930_120112238",
+      "https://www.163.com/dy/article/JT43DRKV0550S2L1.html",
+      "https://www.163.com/dy/article/K30FO5MK0550S2L1.html",
+      "https://www.smzdm.com/p/a74e67ol/",
+      "https://www.smzdm.com/p/axd8wr64/",
+      "https://blog.csdn.net/2501_94652164/article/details/155947200",
+      "https://xueqiu.com/6484614528/366086769"
+    ]
+  }
+}
