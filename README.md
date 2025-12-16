@@ -6,8 +6,9 @@
 
 ## 功能特性
 
-- 支持多平台（搜狐、头条）
-- 随机User-Agent生成
+- 支持多平台（搜狐、头条、网易、CSDN、雪球、什么值得买等）
+- URL自动检测平台功能
+- 随机User-Agent生成（支持平台特定User-Agent）
 - 代理IP支持（可选）
 - 模拟真实用户行为（随机停留时间、滚动页面）
 - 详细的日志记录
@@ -21,12 +22,11 @@ auto_clicker/
 ├── config/                # 配置文件目录
 │   ├── config.json        # 主配置文件
 │   ├── platforms.json     # 平台配置文件
-│   └── articles.json      # 文章ID配置文件
+│   └── articles.json      # 文章URL配置文件
 ├── engines/               # 点击引擎目录
 │   ├── __init__.py
 │   ├── base_engine.py     # 基础引擎类
-│   ├── sohu_engine.py     # 搜狐平台引擎
-│   └── toutiao_engine.py  # 头条平台引擎
+│   └── generic_engine.py  # 通用点击引擎
 ├── utils/                 # 工具模块目录
 │   ├── __init__.py
 │   ├── proxy_manager.py   # 代理管理
@@ -71,7 +71,7 @@ pip install -r requirements.txt
 
 ### platforms.json
 
-平台配置文件，定义支持的平台信息：
+平台配置文件，定义支持的平台信息（用于URL自动检测）：
 
 ```json
 {
@@ -79,25 +79,43 @@ pip install -r requirements.txt
         {
             "name": "sohu",         # 平台名称（用于代码标识）
             "display_name": "搜狐",   # 平台显示名称
-            "url_template": "https://www.sohu.com/a/{article_id}",  # URL模板
+            "domain": "sohu.com",    # 平台域名（用于URL检测）
             "active": true           # 是否启用该平台
         },
         {
             "name": "toutiao",      # 平台名称（用于代码标识）
             "display_name": "头条",   # 平台显示名称
-            "url_template": "https://www.toutiao.com/a{article_id}/",  # URL模板
+            "domain": "toutiao.com", # 平台域名（用于URL检测）
             "active": true           # 是否启用该平台
         },
         {
             "name": "netease",      # 平台名称（用于代码标识）
             "display_name": "网易",   # 平台显示名称
-            "url_template": "https://www.163.com/dy/article/{article_id}.html",  # URL模板
+            "domain": "163.com",     # 平台域名（用于URL检测）
             "active": true           # 是否启用该平台
         },
         {
             "name": "smzdm",        # 平台名称（用于代码标识）
             "display_name": "什么值得买",   # 平台显示名称
-            "url_template": "https://post.smzdm.com/p/{article_id}/",  # URL模板
+            "domain": "smzdm.com",   # 平台域名（用于URL检测）
+            "active": true           # 是否启用该平台
+        },
+        {
+            "name": "csdn",         # 平台名称（用于代码标识）
+            "display_name": "CSDN",   # 平台显示名称
+            "domain": "csdn.net",    # 平台域名（用于URL检测）
+            "active": true           # 是否启用该平台
+        },
+        {
+            "name": "xueqiu",       # 平台名称（用于代码标识）
+            "display_name": "雪球",   # 平台显示名称
+            "domain": "xueqiu.com",  # 平台域名（用于URL检测）
+            "active": true           # 是否启用该平台
+        },
+        {
+            "name": "generic",      # 平台名称（用于代码标识）
+            "display_name": "通用",   # 平台显示名称
+            "domain": "",           # 通用平台无特定域名
             "active": true           # 是否启用该平台
         }
     ]
@@ -106,58 +124,38 @@ pip install -r requirements.txt
 
 ### articles.json
 
-文章ID配置文件，统一管理各平台的文章ID：
+文章URL配置文件，直接列出需要点击的完整URL：
 
 ```json
 {
-  "articles": {
-    "description": "各平台的文章ID配置",
-    "format": "{平台名称: [文章ID列表]}",
-    "default": {},
-    "values": {
-      "sohu": [
-        "906003169_211762",
-        "876963035_121312308",
-        "876962930_120112238"
-      ],
-      "toutiao": [
-        "1234567890123456789",
-        "9876543210987654321"
-      ],
-      "netease": [
-        "JT43DRKV0550S2L1",
-        "K30FO5MK0550S2L1"
-      ],
-      "smzdm": []
-    }
+  "clicks": {
+    "description": "需要点击的URL列表",
+    "format": "[URL列表]",
+    "default": [],
+    "values": [
+      "https://www.sohu.com/a/906003169_211762",
+      "https://www.sohu.com/a/876963035_121312308",
+      "https://www.toutiao.com/a1234567890123456789/",
+      "https://www.163.com/dy/article/JT43DRKV0550S2L1.html",
+      "https://post.smzdm.com/p/axd8wr64/",
+      "https://blog.csdn.net/2501_94652164/article/details/155947200",
+      "https://xueqiu.com/6484614528/366086769"
+    ]
   }
 }
 ```
 
 ## 使用方法
 
-1. 编辑 `config/config.json` 文件，调整运行参数
-2. 编辑 `config/platforms.json` 文件，添加或修改平台配置
-3. 编辑 `config/articles.json` 文件，添加各平台的文章ID
-4. 运行程序：
+1. 编辑 `config/config.json` 文件，调整运行参数（可选）
+2. 编辑 `config/articles.json` 文件，添加需要点击的完整URL列表
+3. 运行程序：
 
 ```bash
 python main.py
 ```
 
-## 示例帖子ID格式
-
-### 搜狐平台
-
-搜狐帖子ID格式为 `数字_数字`，例如：`123456789_12345`
-
-### 头条平台
-
-头条帖子ID格式为纯数字，例如：`1234567890123456789`
-
-### 网易平台
-
-网易帖子ID格式为字母数字组合，通常以字母开头，例如：`H1234567890ABCDEF`
+**注意：** 不需要手动配置平台信息，程序会自动从URL检测平台类型。
 
 ## 可能遇到的问题及解决方案
 
@@ -198,13 +196,26 @@ python main.py
 
 ## 扩展说明
 
-### 添加新平台
+### 如何工作
 
-1. 在 `engines` 目录下创建新的引擎类，继承自 `BaseClickEngine`
-2. 实现 `generate_url` 和 `click` 方法
-3. 在 `engines/__init__.py` 中导出新的引擎类
-4. 在 `main.py` 中添加新平台的初始化逻辑
-5. 在 `platforms.json` 中添加新平台的配置
+程序使用通用点击引擎，通过以下流程处理点击请求：
+1. 从 `articles.json` 加载URL列表
+2. 对每个URL，自动检测其所属平台（通过域名匹配）
+3. 根据检测到的平台设置合适的User-Agent
+4. 执行点击操作并记录结果
+
+### 添加新平台支持
+
+要支持新平台，只需在 `platforms.json` 中添加平台配置：
+
+```json
+{
+    "name": "new_platform",      # 平台名称（用于代码标识）
+    "display_name": "新平台",    # 平台显示名称
+    "domain": "newplatform.com", # 平台域名（用于URL检测）
+    "active": true               # 是否启用该平台
+}
+```
 
 ### 自定义用户行为
 
@@ -213,6 +224,13 @@ python main.py
 - 停留更长时间
 - 复制文本
 - 打开新标签页
+
+### 自定义通用引擎
+
+如果需要修改URL检测或点击逻辑，可以编辑 `engines/generic_engine.py` 文件：
+- `_detect_platform` 方法：修改平台检测逻辑
+- `click` 方法：修改点击执行逻辑
+- `_validate_parameters` 方法：修改URL验证规则
 
 ## 注意事项
 
